@@ -7,12 +7,16 @@ import {
 } from "@redux-saga/core/effects";
 import * as axios from "axios";
 import { deleteTestFromReducer, setTest, setTests } from "./actions";
-import { DELETE_TEST, GET_TEST, GET_TESTS } from "./constants";
+import { DELETE_TEST, GET_TEST, GET_TESTS, SAVE_TEST } from "./constants";
 
 const API = {
   fetchTests: () => axios.get("http://localhost:3000/tests"),
   deleteTest: id => axios.delete(`http://localhost:3000/tests/${id}`),
-  fetchTest: id => axios.get(`http://localhost:3000/tests/${id}`)
+  fetchTest: id => axios.get(`http://localhost:3000/tests/${id}`),
+  updateTest: data =>
+    axios.put(`http://localhost:3000/tests`, {
+      data
+    })
 };
 
 function* getTests() {
@@ -38,15 +42,27 @@ function* getTest(action) {
   try {
     const response = yield call(API.fetchTest, action.id);
     const test = response.data;
-
     yield put(setTest(test));
   } catch (e) {}
+}
+
+function* saveTest(action) {
+  console.log(action);
+  try {
+    //const response = yield call(API.updateTest);
+    //yield put();
+  } catch (e) {
+
+  }
+
+
 }
 
 export function* rootSaga() {
   yield all([
     yield takeLatest(GET_TESTS, getTests),
     yield takeEvery(DELETE_TEST, deleteTest),
-    yield takeLatest(GET_TEST, getTest)
+    yield takeLatest(GET_TEST, getTest),
+    yield takeLatest(SAVE_TEST, saveTest)
   ]);
 }

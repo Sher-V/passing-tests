@@ -4,8 +4,9 @@ const db = require("../config/database");
 const Test = db.define(
   "test",
   {
-    name: {
-      type: Sequilize.STRING
+    title: {
+      type: Sequilize.STRING,
+      allowNull: false
     }
   },
   {

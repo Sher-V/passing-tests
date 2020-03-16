@@ -3,16 +3,18 @@ const router = express.Router();
 const db = require("../config/database");
 const Test = require("../models/Test");
 const Question = require("../models/Question");
+const Answer = require("../models/Answer");
 
-router.get("/", (req, res) => {
-  //console.log(req);
-  return Test.findAll({
+// get all tests
+router.get("/", (req, res) =>
+  Test.findAll({
     raw: true
   })
     .then(tests => res.json(tests))
-    .catch(err => console.log(err));
-});
+    .catch(err => console.log(err))
+);
 
+// delete test by Id
 router.delete("/:id", (req, res) =>
   Test.destroy({
     where: {
@@ -23,6 +25,7 @@ router.delete("/:id", (req, res) =>
     .catch(err => console.log(err))
 );
 
+// create new test
 router.post("/", (req, res) =>
   Test.create(
     {
@@ -47,6 +50,7 @@ router.post("/", (req, res) =>
     .catch(err => console.log(err))
 );
 
+// update test
 router.put("/", (req, res) => {
   Test.update(
     {
@@ -78,15 +82,35 @@ router.put("/", (req, res) => {
     .catch(err => console.log(err));
 });
 
-router.get("/:id", (req, res) =>
-  Question.findAll({
-    raw: true,
-    where: {
-      test_id: req.params.id
+// get test by id
+router.get("/:id", async (req, res) => {
+  try {
+    const test = await Test.findByPk(req.params.id, {
+      raw: true
+    });
+    const questions = await Question.findAll({
+      raw: true,
+      where: {
+        test_id: req.params.id
+      }
+    });
+    const answers = [];
+    for (const question of questions) {
+      await Answer.findAll({
+        raw: true,
+        where: {
+          question_id: question.id
+        }
+      }).then(newAnswers => answers.push(newAnswers));
     }
-  })
-    .then(questions => res.json(questions))
-    .catch(err => console.log(err))
-);
+    res.json({
+      title: test.title,
+      questions,
+      answers
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 module.exports = router;

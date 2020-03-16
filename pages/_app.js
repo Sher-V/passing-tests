@@ -1,19 +1,28 @@
 import withRedux from "next-redux-wrapper";
 import makeStore from "../redux/store";
 import { Provider } from "react-redux";
-import React from "react";
+import React, { useEffect } from "react";
 import App from "next/app";
 import withReduxSaga from "next-redux-saga";
-import { getTests } from "../redux/actions";
-import Grid from "@material-ui/core/Grid";
-import { MuiThemeProvider } from "@material-ui/core";
-import getMuiTheme from "material-ui/styles/getMuiTheme";
 
 function MyApp({ Component, pageProps, store }) {
   const getLayout = Component.getLayout || (page => page);
+  useEffect(() => {
+    // Remove the server-side injected CSS.
+    const jssStyles = document.querySelector("#jss-server-side");
+    if (jssStyles) {
+      jssStyles.parentElement.removeChild(jssStyles);
+    }
+  }, []);
 
   return (
-    <Provider store={store}>{getLayout(<div><Component {...pageProps} /></div>)}</Provider>
+    <Provider store={store}>
+      {getLayout(
+        <div>
+          <Component {...pageProps} />
+        </div>
+      )}
+    </Provider>
   );
 }
 

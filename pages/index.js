@@ -5,17 +5,33 @@ import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import withRedux from "next-redux-wrapper";
-import fetch from "isomorphic-unfetch";
-import Container from "@material-ui/core/Container";
 import Link from "next/link";
-import makeStore from "../redux/store";
+import { deleteTest, getTests } from "../redux/actions";
 import { connect } from "react-redux";
-import { deleteTest, getTests, increment, setFOO } from "../redux/actions";
-import { GET_TESTS } from "../redux/constants";
 import IndexLayout from "../components/IndexLayout";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import { makeStyles } from "@material-ui/core/styles";
+import CreateIcon from "@material-ui/icons/Create";
+
+const useStyles = makeStyles(theme => ({
+  grid: {
+    marginTop: theme.spacing(10)
+  },
+  card: {
+    marginBottom: theme.spacing(5)
+  },
+  delete: {
+    marginLeft: "auto"
+  },
+  button: {
+    lineHeight: "2"
+  }
+}));
 
 let Index = ({ tests, getTests, deleteTest }) => {
+  const classes = useStyles();
+
   useEffect(() => {
     getTests();
   }, []);
@@ -23,21 +39,29 @@ let Index = ({ tests, getTests, deleteTest }) => {
     <>
       {tests.map(test => (
         <Grid key={test.id} item>
-          <Card>
+          <Card className={classes.card}>
             <CardContent>
-              <Typography>{test.name}</Typography>
+              <Typography gutterBottom variant={"h6"}>{test.title}</Typography>
             </CardContent>
-            <CardActions>
-              <Button onClick={() => deleteTest(test.id)}>Delete test</Button>
+            <CardActions disableSpacing>
               <Link passHref={true} href={"/test/[id]"} as={`/test/${test.id}`}>
-                <a>Edit test</a>
+                <Button color={"primary"}>Редактировать тест</Button>
               </Link>
+              <IconButton
+                className={classes.delete}
+                onClick={() => deleteTest(test.id)}
+                color={"primary"}
+              >
+                <DeleteIcon fontSize={"large"} />
+              </IconButton>
             </CardActions>
           </Card>
         </Grid>
       ))}
       <Link passHref={true} href={"/test/[id]"} as={`/test/new`}>
-        <Button>Create new test</Button>
+        <Button className={classes.button} color={'primary'} endIcon={<CreateIcon />} fullWidth>
+          Создать новый тест
+        </Button>
       </Link>
     </>
   );
