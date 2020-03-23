@@ -3,6 +3,7 @@ import {
   DELETE_TEST_FROM_REDUCER,
   GET_TEST,
   GET_TESTS,
+  RESET_TEST,
   SAVE_TEST,
   SET_TEST,
   SET_TESTS
@@ -14,10 +15,14 @@ export const deleteTestFromReducer = id => ({
   id
 });
 export const setTest = test => ({ type: SET_TEST, test });
+export const resetTest = () => {
+  debugger;
+  return { type: RESET_TEST };
+};
 
 // sagas action creators
 export const getTests = () => ({ type: GET_TESTS });
 export const deleteTest = id => ({ type: DELETE_TEST, id });
 
 export const getTest = id => ({ type: GET_TEST, id });
-export const saveTest = (fields) =>{ debugger; return  { type: SAVE_TEST, fields}};
+export const saveTest = fields => ({ type: SAVE_TEST, fields });

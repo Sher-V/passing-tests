@@ -28,7 +28,7 @@ const Question = db.define(
   }
 );
 
-Question.hasMany(Answer, { foreignKey: "question_id" });
-Answer.belongsTo(Question, { foreignKey: "question_id" });
+Question.hasMany(Answer, { as: "Answer", foreignKey: "question_id" });
+Answer.belongsTo(Question, { as: "Answer", foreignKey: "question_id" });
 
 module.exports = Question;

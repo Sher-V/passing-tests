@@ -47,15 +47,21 @@ function* getTest(action) {
 }
 
 function* saveTest(action) {
-  console.log(action);
+  // TODO save
+  action.fields.questions.forEach(question => {
+    if (question.type === "single")
+      question.answers.forEach(answer => {
+        if (answer.answer === question.right_answer)
+          answer.is_right_answer = true;
+        else answer.is_right_answer = false;
+        delete question.right_answer;
+      });
+  });
+  console.log(action)
   try {
     //const response = yield call(API.updateTest);
     //yield put();
-  } catch (e) {
-
-  }
-
-
+  } catch (e) {}
 }
 
 export function* rootSaga() {

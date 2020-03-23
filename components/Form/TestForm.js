@@ -30,6 +30,110 @@ import { saveTest } from "../../redux/actions";
 const renderCheckBox = field => {
   return <Checkbox {...field.input} />;
 };
+
+const renderFields = ({ fields, meta: { error, submitFailed }, ...others }) => {
+  return (
+    <>
+      {fields.map((field, index) => (
+        <div key={index} style={{ display: "flex" }}>
+          <Field
+            name={`${field}.answer`}
+            component={renderField}
+            label={`Ответ ${index + 1}`}
+          />
+          <IconButton onClick={() => fields.remove(index)}>
+            <DeleteIcon />
+          </IconButton>
+        </div>
+      ))}{" "}
+      <Button
+        style={{ marginTop: "25px" }}
+        fullWidth
+        variant={"contained"}
+        color={"primary"}
+        onClick={() => fields.push("")}
+      >
+        Добавить ответ
+      </Button>
+    </>
+  );
+};
+
+/*const renderAnswers = fields => {
+  return (
+    <FormControl fullWidth>
+      <FormLabel component="legend" required>
+        Ответы
+      </FormLabel>
+      {(fields.type === "single" && (
+        <RadioGroup {...fields.questions[fields.index].right_answer.input}>
+          <FieldArray name={fields.names[0]} component={renderOptions} />
+        </RadioGroup>
+      )) ||
+        (fields.type === "multiple" && (
+          <FormGroup>
+            <FieldArray
+              name={fields.names[0]}
+              component={renderOptions}
+              type={fields.type}
+            />
+          </FormGroup>
+        )) ||
+        (fields.type === "anything" && (
+          <FieldArray
+            name={fields.names[0]}
+            component={renderFields}
+            type={fields.type}
+          />
+        ))}
+    </FormControl>
+  );
+};*/
+
+/*const renderQuestions = ({ fields, meta: { error, submitFailed } }) => {
+  const classes = useStyles();
+  return fields.map((field, index) => {
+    return (
+      <Paper key={index} className={classes.paper} elevation={3}>
+        <Field
+          label="Тип вопроса"
+          name={`${field}.type`}
+          component={renderSelectField}
+          index={index}
+        />
+        <Field
+          label="Текст вопроса"
+          name={`${field}.text`}
+          component={renderTextArea}
+        />
+        <Fields
+          names={[`${field}.answers`, `${field}.right_answer`]}
+          component={renderAnswers}
+          index={index}
+          type={fields.get(index).type}
+        />
+      </Paper>
+    );
+  });
+};*/
+
+/*const renderTitle = ({ input, label, type, meta: { touched, error } }) => {
+  const classes = useStyles();
+  return (
+    <TextField
+      label={"Название теста"}
+      required
+      classes={{ root: classes.title }}
+      InputLabelProps={{
+        classes: {
+          root: classes.titleLabel
+        }
+      }}
+      {...input}
+    />
+  );
+};*/
+
 const renderOptions = ({
   fields,
   meta: { error, submitFailed },
@@ -73,35 +177,13 @@ const renderOptions = ({
         fullWidth
         variant={"contained"}
         color={"primary"}
-        onClick={() => fields.push("")}
-      >
-        Добавить ответ
-      </Button>
-    </>
-  );
-};
-
-const renderFields = ({ fields, meta: { error, submitFailed }, ...others }) => {
-  return (
-    <>
-      {fields.map((field, index) => (
-        <div key={index} style={{ display: "flex" }}>
-          <Field
-            name={`${field}.answer`}
-            component={renderField}
-            label={`Ответ ${index + 1}`}
-          />
-          <IconButton onClick={() => fields.remove(index)}>
-            <DeleteIcon />
-          </IconButton>
-        </div>
-      ))}{" "}
-      <Button
-        style={{ marginTop: "25px" }}
-        fullWidth
-        variant={"contained"}
-        color={"primary"}
-        onClick={() => fields.push("")}
+        onClick={() =>
+          fields.push({
+            answer: `${fields.length}`,
+            question_id: others.questionId,
+            is_right_answer: false
+          })
+        }
       >
         Добавить ответ
       </Button>
@@ -115,86 +197,99 @@ const renderAnswers = fields => {
       <FormLabel component="legend" required>
         Ответы
       </FormLabel>
-      {(fields.type === "single" && (
-        <RadioGroup {...fields.questions[fields.index].right_answer.input}>
-          <FieldArray name={fields.names[0]} component={renderOptions} />
-        </RadioGroup>
-      )) ||
-        (fields.type === "multiple" && (
-          <FormGroup>
-            <FieldArray
-              name={fields.names[0]}
-              component={renderOptions}
-              type={fields.type}
-            />
-          </FormGroup>
-        )) ||
-        (fields.type === "anything" && (
-          <FieldArray
-            name={fields.names[0]}
-            component={renderFields}
-            type={fields.type}
-          />
-        ))}
+      {(() => {
+        switch (fields.questionType) {
+          case "single":
+            return (
+              <RadioGroup
+                {...fields.questions[fields.questionIndex].right_answer.input}
+              >
+                <FieldArray
+                  name={fields.names[0]}
+                  component={renderOptions}
+                  type={fields.questionType}
+                  questionId={fields.questionId}
+                />
+              </RadioGroup>
+            );
+          case "multiple":
+            return (
+              <FormGroup>
+                <FieldArray
+                  name={fields.names[0]}
+                  component={renderOptions}
+                  type={fields.questionType}
+                />
+              </FormGroup>
+            );
+          case "anything":
+            return (
+              <FieldArray name={fields.names[0]} component={renderFields} />
+            );
+        }
+      })()}
     </FormControl>
   );
 };
 
-const renderQuestions = ({ fields, meta: { error, submitFailed } }) => {
-  const classes = useStyles();
-  return fields.map((field, index) => {
-    return (
-      <Paper key={index} className={classes.paper} elevation={3}>
-        <Field
-          label="Тип вопроса"
-          name={`${field}.type`}
-          component={renderSelectField}
-          index={index}
-        />
-        <Field
-          label="Текст вопроса"
-          name={`${field}.text`}
-          component={renderTextArea}
-        />
-        <Fields
-          names={[`${field}.answers`, `${field}.right_answer`]}
-          component={renderAnswers}
-          index={index}
-          type={fields.get(index).type}
-        />
-      </Paper>
-    );
-  });
-};
-
-const renderTitle = ({ input, label, type, meta: { touched, error } }) => {
+const renderQuestions = ({ fields }) => {
   const classes = useStyles();
   return (
-    <TextField
-      label={"Название теста"}
-      required
-      classes={{ root: classes.title }}
-      InputLabelProps={{
-        classes: {
-          root: classes.titleLabel
+    <div style={{ marginBottom: "10px" }}>
+      {fields.map((field, index) => {
+        return (
+          <Paper key={index} className={classes.paper} elevation={3}>
+            <Field
+              label="Тип вопроса"
+              name={`${field}.type`}
+              component={renderSelectField}
+              index={index}
+            />
+            <Field
+              label="Текст вопроса"
+              name={`${field}.text`}
+              component={renderTextArea}
+            />
+            <Fields
+              names={[`${field}.answers`, `${field}.right_answer`]}
+              questionType={fields.get(index).type}
+              questionIndex={index}
+              questionId={fields.get(index).id}
+              component={renderAnswers}
+            />
+          </Paper>
+        );
+      })}
+      <Button
+        style={{ marginTop: "25px" }}
+        fullWidth
+        variant={"contained"}
+        color={"primary"}
+        onClick={() =>
+          fields.push({
+            type: "single",
+            text: "",
+            right_answer: "answer",
+            answers: [{ answer: "answer", question_id: null, is_right_answer: false }]
+          })
         }
-      }}
-      {...input}
-    />
+      >
+        Добавить вопрос
+      </Button>
+    </div>
   );
 };
 
 const TestForm = props => {
-  const { handleSubmit, test, saveTest } = props;
+  const { handleSubmit, loaded, saveTest, initialValues, type } = props;
   const classes = useStyles();
+  if (!loaded && type !== "new") return <div>Loading</div>;
   return (
     <div>
-      <Typography>{test.title}</Typography>
       <form
         className={classes.form}
         onSubmit={handleSubmit(fields => saveTest(fields))}
       >
-        <Field name={"title"} component={renderTitle} />
         <FieldArray name={"questions"} component={renderQuestions} />
         <Button
           color={"primary"}
@@ -210,10 +305,11 @@ const TestForm = props => {
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
   return {
+    type: props.id,
     initialValues: state.testReducer.test,
-    test: state.testReducer
+    loaded: state.testReducer.loaded
   };
 };
 
