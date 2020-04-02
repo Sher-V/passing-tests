@@ -4,7 +4,7 @@ import { Container } from "@material-ui/core";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { getTest, resetTest } from "../../../redux/actions";
-import NewTestForm from "../../../components/Form/NewTestForm";
+import NewTestForm from "../../../components/NewForm/NewTestForm";
 
 const Test = ({ initialValues, getTest, resetTest }) => {
   const router = useRouter();

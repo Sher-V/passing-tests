@@ -1,27 +1,27 @@
 import React from "react";
 import { Form, Field } from "react-final-form";
 import Button from "@material-ui/core/Button";
-import { useStyles } from "./styles";
+import { useStyles } from "../Form/styles";
 import SaveIcon from "@material-ui/icons/Save";
 import arrayMutators from "final-form-arrays";
 import { FieldArray } from "react-final-form-arrays";
 import { renderQuestions } from "./newtestformhelpers";
-import { validate } from "./validation";
+import { validate } from "../Form/validation";
 
 const NewTestForm = ({ initialValues }) => {
   const classes = useStyles();
   //if (!loaded && type !== "new") return <div>Loading</div>;
-    debugger
   return (
     <Form
       onSubmit={values => {
         // submit values
-        //console.log(values);
+          debugger
+        console.log(values);
       }}
       mutators={{ ...arrayMutators }}
-      validate={validate}
+      // validate={validate}
       initialValues={initialValues}
-      render={({ handleSubmit, saveTest }) => {
+      render={({ handleSubmit, saveTest, submitting, pristine }) => {
         return (
           <form className={classes.form} onSubmit={handleSubmit}>
             <FieldArray
@@ -34,6 +34,7 @@ const NewTestForm = ({ initialValues }) => {
               fullWidth
               type={"submit"}
               endIcon={<SaveIcon />}
+              disabled={submitting || pristine}
             >
               Сохранить
             </Button>
