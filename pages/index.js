@@ -13,17 +13,9 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { makeStyles } from "@material-ui/core/styles";
 import CreateIcon from "@material-ui/icons/Create";
+import { TestCard } from "../components/TestCard/TestCard";
 
 const useStyles = makeStyles(theme => ({
-  grid: {
-    marginTop: theme.spacing(10)
-  },
-  card: {
-    marginBottom: theme.spacing(5)
-  },
-  delete: {
-    marginLeft: "auto"
-  },
   button: {
     lineHeight: "2"
   }
@@ -35,35 +27,23 @@ let Index = ({ tests, getTests, deleteTest }) => {
   useEffect(() => {
     getTests();
   }, []);
+
   return (
-    <>
-      {tests.map(test => (
-        <Grid key={test.id} item>
-          <Card className={classes.card}>
-            <CardContent>
-              <Typography gutterBottom variant={"h6"}>{test.title}</Typography>
-            </CardContent>
-            <CardActions disableSpacing>
-              <Link passHref={true} href={"/test/[id]"} as={`/test/${test.id}`}>
-                <Button color={"primary"}>Редактировать тест</Button>
-              </Link>
-              <IconButton
-                className={classes.delete}
-                onClick={() => deleteTest(test.id)}
-                color={"primary"}
-              >
-                <DeleteIcon fontSize={"large"} />
-              </IconButton>
-            </CardActions>
-          </Card>
-        </Grid>
+    <div>
+      {tests.map((test, index) => (
+        <TestCard key={index} test={test} deleteTest={deleteTest} />
       ))}
       <Link passHref={true} href={"/test/[id]"} as={`/test/new`}>
-        <Button className={classes.button} color={'primary'} endIcon={<CreateIcon />} fullWidth>
+        <Button
+          className={classes.button}
+          color={"primary"}
+          endIcon={<CreateIcon />}
+          fullWidth
+        >
           Создать новый тест
         </Button>
       </Link>
-    </>
+    </div>
   );
 };
 

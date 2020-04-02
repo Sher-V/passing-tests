@@ -1,4 +1,6 @@
 import {
+  ADD_ANSWER,
+  DELETE_ANSWER,
   DELETE_TEST_FROM_REDUCER,
   RESET_TEST,
   SET_TEST,
@@ -22,13 +24,18 @@ export const testReducer = produce((draft = initialState, action) => {
           question.right_answer = question.answers.find(
             answer => answer.is_right_answer === true
           ).answer;
+        else if (question.type === "multiple")
+          question.right_answer = question.answers
+            .filter(answer => answer.is_right_answer)
+            .map(elem => elem.answer);
         return question;
       });
+      console.log(action.test.questions);
+
       draft.test = action.test;
       draft.loaded = true;
       break;
     case RESET_TEST:
-      debugger
       draft.test = initialState.test;
       draft.loaded = false;
       break;

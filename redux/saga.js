@@ -47,14 +47,15 @@ function* getTest(action) {
 }
 
 function* saveTest(action) {
-  // TODO save
+  console.log(action)
+  debugger
   action.fields.questions.forEach(question => {
     if (question.type === "single")
       question.answers.forEach(answer => {
+        debugger
         if (answer.answer === question.right_answer)
           answer.is_right_answer = true;
         else answer.is_right_answer = false;
-        delete question.right_answer;
       });
   });
   console.log(action)
