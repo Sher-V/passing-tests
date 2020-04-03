@@ -4,7 +4,7 @@ import {
   DELETE_TEST_FROM_REDUCER,
   RESET_TEST,
   SET_TEST,
-  SET_TESTS
+  SET_TESTS, TEST_CREATED
 } from "../constants";
 import produce from "immer";
 
@@ -13,7 +13,8 @@ export const initialState = {
     title: "",
     questions: []
   },
-  loaded: false
+  loaded: false,
+  created: false,
 };
 
 export const testReducer = produce((draft = initialState, action) => {
@@ -38,6 +39,10 @@ export const testReducer = produce((draft = initialState, action) => {
     case RESET_TEST:
       draft.test = initialState.test;
       draft.loaded = false;
+      break;
+    case TEST_CREATED:
+      draft.created = true;
+      debugger
       break;
     default:
       return draft;

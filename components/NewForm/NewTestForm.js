@@ -7,27 +7,30 @@ import arrayMutators from "final-form-arrays";
 import { FieldArray } from "react-final-form-arrays";
 import { renderQuestions } from "./newtestformhelpers";
 import { validate } from "../Form/validation";
+import { TextField } from "mui-rff";
 
-const NewTestForm = ({ initialValues }) => {
+const NewTestForm = ({ initialValues, saveTest }) => {
   const classes = useStyles();
   //if (!loaded && type !== "new") return <div>Loading</div>;
   return (
     <Form
       onSubmit={values => {
-        // submit values
-          debugger
+        saveTest(values);
         console.log(values);
       }}
       mutators={{ ...arrayMutators }}
       // validate={validate}
       initialValues={initialValues}
-      render={({ handleSubmit, saveTest, submitting, pristine }) => {
+      render={({ handleSubmit, submitting, pristine }) => {
         return (
           <form className={classes.form} onSubmit={handleSubmit}>
-            <FieldArray
-              name={"questions"}
-              component={renderQuestions}
+            <TextField
+              label={"Название теста"}
+              placeholder={"Название"}
+              required
+              name={"title"}
             />
+            <FieldArray name={"questions"} component={renderQuestions} />
             <Button
               color={"primary"}
               variant={"contained"}

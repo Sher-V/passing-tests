@@ -28,35 +28,44 @@ router.delete("/:id", (req, res) =>
 );
 
 // create new test
-router.post("/", (req, res) =>
+router.post("/", (req, res) => {
   Test.create(
     {
-      name: req.body.testName
+      title: req.body.title
     },
     {
       raw: true
     }
   )
     .then(test => {
-      req.body.questions.forEach(question =>
-        Question.create({
-          type: question.type,
-          text: question.text,
-          answers: question.answers,
-          right_answer: question.right_answer,
-          test_id: test.get({ plain: true }).id
-        })
+      req.body.questions.forEach((question, questionIndex) =>
+        Question.create(
+          {
+            type: question.type,
+            text: question.text,
+            test_id: test.get({ plain: true }).id
+          },
+          { raw: true }
+        ).then(question =>
+          req.body.questions[questionIndex].answers.forEach(answer =>
+            Answer.create({
+              answer: answer.answer,
+              is_right_answer: answer.is_right_answer,
+              question_id: question.get({ plain: true }).id
+            })
+          )
+        )
       );
       res.sendStatus(200);
     })
-    .catch(err => console.log(err))
-);
+    .catch(err => console.log(err));
+});
 
 // update test
 router.put("/", (req, res) => {
   Test.update(
     {
-      name: req.body.testName
+      title: req.body.title
     },
     {
       where: {

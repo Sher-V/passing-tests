@@ -65,6 +65,24 @@ export const renderQuestions = ({ fields, ...other }) => {
           </Paper>
         );
       })}
+      <Button
+        style={{ marginTop: "25px" }}
+        fullWidth
+        variant={"contained"}
+        color={"primary"}
+        onClick={() =>
+          fields.push({
+            type: "single",
+            text: "Новый вопрос",
+            right_answer: "Ответ",
+            answers: [
+              { answer: "Ответ", is_right_answer: true }
+            ]
+          })
+        }
+      >
+        Добавить вопрос
+      </Button>
     </div>
   );
 };
