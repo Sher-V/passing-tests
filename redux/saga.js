@@ -20,7 +20,6 @@ import {
   DELETE_TEST,
   GET_TEST,
   GET_TESTS,
-  SAVE_TEST,
   UPDATE_TEST
 } from "./constants";
 import { transformSingleQuestions } from "./utils";

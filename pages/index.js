@@ -8,7 +8,7 @@ import Button from "@material-ui/core/Button";
 import Link from "next/link";
 import { deleteTest, getTests } from "../redux/actions";
 import { connect } from "react-redux";
-import IndexLayout from "../Layouts/IndexLayout";
+import IndexLayout from "../layouts/IndexLayout";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { makeStyles } from "@material-ui/core/styles";
