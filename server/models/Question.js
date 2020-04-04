@@ -16,6 +16,7 @@ const Question = db.define(
     },
     test_id: {
       type: Sequilize.INTEGER,
+      allowNull: false,
       references: {
         model: Test,
         key: "id"

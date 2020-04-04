@@ -24,11 +24,12 @@ const Test = ({
   const id = router.query.id;
 
   useEffect(() => {
-    if (!isNaN(id)) getTest(id);
+    if (created) {
+      resetTest();
+      router.push("/");
+    } else if (!isNaN(id)) getTest(id);
     else resetTest();
-  }, []);
-
-  if (created) router.push("/");
+  }, [created]);
 
   return (
     <NewTestForm

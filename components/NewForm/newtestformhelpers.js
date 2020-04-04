@@ -1,4 +1,4 @@
-import { useStyles } from "../Form/styles";
+import { useStyles } from "./styles";
 import Paper from "@material-ui/core/Paper";
 import React from "react";
 import { Checkboxes, Radios, Select, TextField } from "mui-rff";

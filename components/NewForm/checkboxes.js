@@ -1,4 +1,4 @@
-import { useStyles } from "../Form/styles";
+import { useStyles } from "./styles";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import Button from "@material-ui/core/Button";
@@ -51,7 +51,6 @@ export const renderCheckboxes = ({ fields }) => {
       <Button
         style={{ marginTop: "25px" }}
         fullWidth
-        variant={"contained"}
         color={"primary"}
         onClick={() => fields.push({ answer: "", is_right_answer: false })}
       >

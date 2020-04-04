@@ -9,7 +9,7 @@ const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-// TEST DB
+// tests db
 db.authenticate()
   .then(() => console.log("DB connected"))
   .catch(err => console.log("Error " + err));
@@ -21,6 +21,7 @@ app
 
     server.use(bodyParser.json());
 
+    //handle tests route
     server.use("/tests", require("./routes/tests"));
 
     server.get("*", (req, res) => {

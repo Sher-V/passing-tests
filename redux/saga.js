@@ -15,6 +15,7 @@ import {
   SAVE_TEST,
   UPDATE_TEST
 } from "./constants";
+import { transformSingleQuestions } from "./utils";
 
 const API = {
   fetchTests: () => axios.get("http://localhost:3000/tests"),
@@ -51,47 +52,18 @@ function* getTest(action) {
   } catch (e) {}
 }
 
-function* saveTest(action) {
-  console.log(action);
-  /*  debugger
-  action.fields.questions.forEach(question => {
-    if (question.type === "single")
-      question.answers.forEach(answer => {
-        debugger
-        if (answer.answer === question.right_answer)
-          answer.is_right_answer = true;
-        else answer.is_right_answer = false;
-      });
-  });
-  console.log(action)*/
-  try {
-    //const response = yield call(API.updateTest);
-    //yield put();
-  } catch (e) {}
-}
-
 function* updateTest(action) {
-  debugger;
-
+  const data = transformSingleQuestions(action.fields);
   try {
+    const response = yield call(API.updateTest, data);
+    yield put({ type: "TEST_CREATED" });
   } catch (e) {}
 }
 
 function* createTest(action) {
-  action.fields.questions.forEach(question => {
-    if (question.type === "single") {
-      question.answers.forEach(answer => {
-        if (answer.answer === question.right_answer)
-          answer.is_right_answer = true;
-        else answer.is_right_answer = false;
-      });
-      delete question.right_answer;
-    }
-  });
-  console.log(action.fields);
-
+  const data = transformSingleQuestions(action.fields);
   try {
-    const response = yield call(API.createTest, action.fields);
+    const response = yield call(API.createTest, data);
     yield put({ type: "TEST_CREATED" });
   } catch (e) {}
 }
@@ -101,7 +73,6 @@ export function* rootSaga() {
     yield takeLatest(GET_TESTS, getTests),
     yield takeEvery(DELETE_TEST, deleteTest),
     yield takeLatest(GET_TEST, getTest),
-    yield takeLatest(SAVE_TEST, saveTest),
     yield takeLatest(UPDATE_TEST, updateTest),
     yield takeLatest(CREATE_TEST, createTest)
   ]);

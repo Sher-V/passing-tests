@@ -25,13 +25,13 @@ export const testReducer = produce((draft = initialState, action) => {
           question.right_answer = question.answers.find(
             answer => answer.is_right_answer === true
           ).answer;
-        else if (question.type === "multiple")
-          question.right_answer = question.answers
-            .filter(answer => answer.is_right_answer)
-            .map(elem => elem.answer);
+        // else if (question.type === "multiple")
+        //   question.right_answer = question.answers
+        //     .filter(answer => answer.is_right_answer)
+        //     .map(elem => elem.answer);
         return question;
       });
-      console.log(action.test.questions);
+      //console.log(action.test.questions);
 
       draft.test = action.test;
       draft.loaded = true;
@@ -39,10 +39,10 @@ export const testReducer = produce((draft = initialState, action) => {
     case RESET_TEST:
       draft.test = initialState.test;
       draft.loaded = false;
+      draft.created = false;
       break;
     case TEST_CREATED:
       draft.created = true;
-      debugger
       break;
     default:
       return draft;

@@ -38,59 +38,84 @@ router.post("/", (req, res) => {
     }
   )
     .then(test => {
-      req.body.questions.forEach((question, questionIndex) =>
-        Question.create(
-          {
-            type: question.type,
-            text: question.text,
-            test_id: test.get({ plain: true }).id
-          },
-          { raw: true }
-        ).then(question =>
-          req.body.questions[questionIndex].answers.forEach(answer =>
-            Answer.create({
-              answer: answer.answer,
-              is_right_answer: answer.is_right_answer,
-              question_id: question.get({ plain: true }).id
-            })
+      req.body.questions.forEach(
+        async (question, questionIndex) =>
+          await Question.create(
+            {
+              type: question.type,
+              text: question.text,
+              test_id: test.get({ plain: true }).id
+            },
+            { raw: true }
+          ).then(question =>
+            req.body.questions[questionIndex].answers.forEach(
+              async answer =>
+                await Answer.create({
+                  answer: answer.answer,
+                  is_right_answer: answer.is_right_answer,
+                  question_id: question.get({ plain: true }).id
+                })
+            )
           )
-        )
       );
       res.sendStatus(200);
     })
     .catch(err => console.log(err));
 });
 
-// update test
-router.put("/", (req, res) => {
-  Test.update(
-    {
-      title: req.body.title
-    },
-    {
-      where: {
-        id: req.body.id
-      }
-    }
-  )
-    .then(async () => {
-      await Question.destroy({
+router.put("/", async (req, res) => {
+  try {
+    // await Test.destroy({
+    //   where: {
+    //     id: req.body.id
+    //   }
+    // });
+    // const test = await Test.create(
+    //   {
+    //     title: req.body.title
+    //   },
+    //   {
+    //     raw: true
+    //   }
+    // );
+    const test = await Test.update(
+      {
+        title: req.body.title
+      },
+      {
+        raw: true,
         where: {
-          test_id: req.body.id
+          id: req.body.id
         }
-      });
-      await req.body.questions.forEach(question =>
-        Question.create({
+      }
+    );
+    await Question.destroy({
+      where: {
+        test_id: req.body.id
+      }
+    });
+
+    for (const question of req.body.questions) {
+      const createdQuestion = await Question.create(
+        {
           type: question.type,
           text: question.text,
-          answers: question.answers,
-          right_answer: question.right_answer,
           test_id: req.body.id
-        })
+        },
+        { raw: true }
       );
-      res.sendStatus(200);
-    })
-    .catch(err => console.log(err));
+      for (const answer of question.answers) {
+        await Answer.create({
+          answer: answer.answer,
+          is_right_answer: answer.is_right_answer,
+          question_id: createdQuestion.get({ plain: true }).id
+        });
+      }
+    }
+    res.sendStatus(200);
+  } catch (e) {
+    console.log(e);
+  }
 });
 
 // get test by id
@@ -104,6 +129,7 @@ router.get("/:id", async (req, res) => {
       { type: QueryTypes.SELECT }
     );
     res.json({
+      id: test.id,
       title: test.title,
       questions
     });

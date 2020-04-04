@@ -23,7 +23,6 @@ export const renderFields = ({ fields }) => {
       <Button
         style={{ marginTop: "25px" }}
         fullWidth
-        variant={"contained"}
         color={"primary"}
         onClick={() => fields.push({ answer: "", is_right_answer: true })}
       >

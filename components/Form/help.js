@@ -3,7 +3,7 @@ import {Field} from "react-final-form";
 import {renderField, renderSelectField, renderTextArea} from "./FormComponents";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Button from "@material-ui/core/Button";
-import {useStyles} from "./styles";
+import {useStyles} from "../NewForm/styles";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import FormControl from "@material-ui/core/FormControl";

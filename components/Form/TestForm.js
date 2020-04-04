@@ -1,10 +1,9 @@
 import React from "react";
 import { Field, FieldArray, Fields, reduxForm } from "redux-form";
-import subm from "../subm";
 import Button from "@material-ui/core/Button";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { useStyles } from "./styles";
+import { useStyles } from "../NewForm/styles";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import {

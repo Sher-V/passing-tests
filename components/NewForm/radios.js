@@ -1,4 +1,4 @@
-import { useStyles } from "../Form/styles";
+import { useStyles } from "./styles";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import { Field } from "react-final-form";
@@ -53,7 +53,6 @@ export const renderRadios = ({ fields, right_answer }) => {
       <Button
         style={{ marginTop: "25px" }}
         fullWidth
-        variant={"contained"}
         color={"primary"}
         onClick={() => fields.push({ answer: "", is_right_answer: false })}
       >
