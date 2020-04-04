@@ -1,32 +1,42 @@
-import { useStyles } from "./styles";
+import { useStyles } from "../styles";
 import Paper from "@material-ui/core/Paper";
-import React from "react";
-import { Checkboxes, Radios, Select, TextField } from "mui-rff";
+import { Box, IconButton, Avatar } from "@material-ui/core";
+import { Select, TextField } from "mui-rff";
 import MenuItem from "@material-ui/core/MenuItem";
 import { FieldArray } from "react-final-form-arrays";
+import { renderRadios } from "./answers/radios";
+import { renderCheckboxes } from "./answers/checkboxes";
+import { renderFields } from "./answers/fields";
 import Button from "@material-ui/core/Button";
-import { renderRadios } from "./radios";
-import { renderFields } from "./fields";
-import { renderCheckboxes } from "./checkboxes";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import { Box, IconButton } from "@material-ui/core";
+import React, { useState } from "react";
+import ClearIcon from "@material-ui/icons/Clear";
 
-export const renderQuestions = ({ fields, ...other }) => {
+export const renderQuestions = ({ fields }) => {
   const classes = useStyles();
+
   return (
     <div style={{ marginBottom: "10px" }}>
       {fields.map((name, questionIndex) => {
         const type = fields.value[questionIndex].type;
         return (
           <Paper key={questionIndex} className={classes.paper} elevation={3}>
-            <Box style={{ display: "flex", flexDirection: "row" }}>
+            <Box className={classes.header}>
+              <Avatar
+                style={{
+                  backgroundColor: "#3f51b5",
+                  alignSelf: "center",
+                  marginRight: "10px"
+                }}
+              >
+                {questionIndex + 1}
+              </Avatar>
               <Select name={`${name}.type`} label={"Тип вопроса"} required>
                 <MenuItem value={"single"}>Одиночный выбор</MenuItem>
                 <MenuItem value={"multiple"}>Множественный выбор</MenuItem>
                 <MenuItem value={"anything"}>Прямое совпадение</MenuItem>
               </Select>
-              <IconButton>
-                <MoreVertIcon />
+              <IconButton onClick={() => fields.remove(questionIndex)}>
+                <ClearIcon />
               </IconButton>
             </Box>
             <TextField
@@ -73,11 +83,9 @@ export const renderQuestions = ({ fields, ...other }) => {
         onClick={() =>
           fields.push({
             type: "single",
-            text: "Новый вопрос",
+            text: "",
             right_answer: "Ответ",
-            answers: [
-              { answer: "Ответ", is_right_answer: true }
-            ]
+            answers: [{ answer: "Ответ", is_right_answer: true }]
           })
         }
       >

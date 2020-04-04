@@ -1,7 +1,18 @@
 import { makeStyles } from "@material-ui/core/styles";
 
 export const useStyles = makeStyles(theme => ({
+  header: {
+    display: "flex",
+    flexDirection: "row",
+    marginBottom: theme.spacing(2)
+  },
+  avatar: {
+    backgroundColor: "#3f51b5",
+    alignSelf: "center",
+    marginRight: "10px"
+  },
   form: {
+    width: "100%",
     "& div": {
       marginTop: "10px"
     }
@@ -18,15 +29,6 @@ export const useStyles = makeStyles(theme => ({
   titleLabel: {},
   input: {
     borderBottom: "0"
-  },
-  avatar: {
-    backgroundColor: "#3f51b5",
-    color: "white",
-    marginTop: "0px",
-    marginRight: "5px",
-    alignSelf: "center",
-    width: theme.spacing(5),
-    height: theme.spacing(5)
   },
   label: {
     "& .MuiFormControlLabel-label": {

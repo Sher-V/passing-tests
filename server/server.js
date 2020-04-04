@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const next = require("next");
+const { handleError, ErrorHandler } = require('./helpers/error')
 
 // Database
 const db = require("../server/config/database");
@@ -23,6 +24,12 @@ app
 
     //handle tests route
     server.use("/tests", require("./routes/tests"));
+
+    // error handling
+    server.use((err, req, res, next) => {
+        res.status(403).send({ error: 'Something failed!' });
+        //handleError(err, res);
+    });
 
     server.get("*", (req, res) => {
       return handle(req, res);

@@ -9,7 +9,8 @@ import {
   RESET_TEST,
   SAVE_TEST,
   SET_TEST,
-  SET_TESTS,
+  SET_TESTS, TEST_ERROR,
+  TEST_LOADING, TESTS_ERROR, TESTS_LOADING,
   UPDATE_TEST
 } from "./constants";
 
@@ -20,6 +21,11 @@ export const deleteTestFromReducer = id => ({
 });
 export const setTest = test => ({ type: SET_TEST, test });
 export const resetTest = () => ({ type: RESET_TEST });
+export const setTestLoading = () => ({ type: TEST_LOADING });
+export const setTestError = () => ({type: TEST_ERROR})
+
+export const setTestsError = () => ({type: TESTS_ERROR})
+export const setTestsLoading = () => ({type: TESTS_LOADING})
 
 // sagas action creators
 export const getTests = () => ({ type: GET_TESTS });

@@ -8,42 +8,41 @@ import Button from "@material-ui/core/Button";
 import Link from "next/link";
 import { deleteTest, getTests } from "../redux/actions";
 import { connect } from "react-redux";
-import IndexLayout from "../components/IndexLayout";
+import IndexLayout from "../Layouts/IndexLayout";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { makeStyles } from "@material-ui/core/styles";
 import CreateIcon from "@material-ui/icons/Create";
 import { TestCard } from "../components/TestCard/TestCard";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
 
-const useStyles = makeStyles(theme => ({
-  button: {
-    lineHeight: "2"
-  }
-}));
-
-let Index = ({ tests, getTests, deleteTest }) => {
-  const classes = useStyles();
-
+let Index = ({ loading, error, tests, getTests, deleteTest }) => {
   useEffect(() => {
     getTests();
   }, []);
 
+  if (loading) return <CircularProgress />;
+  if (error)
+    return (
+      <Alert severity="error">
+        <AlertTitle>Ошибка</AlertTitle>
+        Что-то пошло не так...
+      </Alert>
+    );
+
   return (
-    <div>
+    <React.Fragment>
       {tests.map((test, index) => (
         <TestCard key={index} test={test} deleteTest={deleteTest} />
       ))}
       <Link passHref={true} href={"/test/[id]"} as={`/test/new`}>
-        <Button
-          className={classes.button}
-          color={"primary"}
-          endIcon={<CreateIcon />}
-          fullWidth
-        >
+        <Button color={"primary"} endIcon={<CreateIcon />} fullWidth>
           Создать новый тест
         </Button>
       </Link>
-    </div>
+    </React.Fragment>
   );
 };
 
@@ -51,7 +50,9 @@ Index.getLayout = page => <IndexLayout>{page}</IndexLayout>;
 
 const mapStateToProps = state => {
   return {
-    tests: state.reducer.tests
+    tests: state.reducer.tests,
+    error: state.reducer.error,
+    loading: state.reducer.loading
   };
 };
 

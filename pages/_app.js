@@ -7,6 +7,7 @@ import withReduxSaga from "next-redux-saga";
 
 function MyApp({ Component, pageProps, store }) {
   const getLayout = Component.getLayout || (page => page);
+
   useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector("#jss-server-side");
@@ -16,13 +17,7 @@ function MyApp({ Component, pageProps, store }) {
   }, []);
 
   return (
-    <Provider store={store}>
-      {getLayout(
-        <div>
-          <Component {...pageProps} />
-        </div>
-      )}
-    </Provider>
+    <Provider store={store}>{getLayout(<Component {...pageProps} />)}</Provider>
   );
 }
 

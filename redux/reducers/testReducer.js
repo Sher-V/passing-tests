@@ -4,7 +4,10 @@ import {
   DELETE_TEST_FROM_REDUCER,
   RESET_TEST,
   SET_TEST,
-  SET_TESTS, TEST_CREATED
+  SET_TESTS,
+  TEST_CREATED,
+  TEST_ERROR,
+  TEST_LOADING
 } from "../constants";
 import produce from "immer";
 
@@ -13,8 +16,10 @@ export const initialState = {
     title: "",
     questions: []
   },
+  loading: false,
   loaded: false,
-  created: false,
+  error: false,
+  created: false
 };
 
 export const testReducer = produce((draft = initialState, action) => {
@@ -25,21 +30,26 @@ export const testReducer = produce((draft = initialState, action) => {
           question.right_answer = question.answers.find(
             answer => answer.is_right_answer === true
           ).answer;
-        // else if (question.type === "multiple")
-        //   question.right_answer = question.answers
-        //     .filter(answer => answer.is_right_answer)
-        //     .map(elem => elem.answer);
         return question;
       });
-      //console.log(action.test.questions);
-
+      draft.loading = false;
+      draft.error = false;
       draft.test = action.test;
       draft.loaded = true;
       break;
     case RESET_TEST:
       draft.test = initialState.test;
+      draft.loading = false;
       draft.loaded = false;
+      draft.error = false;
       draft.created = false;
+      break;
+    case TEST_LOADING:
+      draft.loading = true;
+      break;
+    case TEST_ERROR:
+      draft.loading = false;
+      draft.error = true;
       break;
     case TEST_CREATED:
       draft.created = true;

@@ -5,85 +5,55 @@ const Test = require("../models/Test");
 const Question = require("../models/Question");
 const Answer = require("../models/Answer");
 const sequilize = require("sequelize");
+const { saveQuestions } = require("./helpers");
 const { QueryTypes } = require("sequelize");
 
 // get all tests
-router.get("/", (req, res) =>
-  Test.findAll({
-    raw: true
-  })
-    .then(tests => res.json(tests))
-    .catch(err => console.log(err))
-);
-
-// delete test by Id
-router.delete("/:id", (req, res) =>
-  Test.destroy({
-    where: {
-      id: req.params.id
-    }
-  })
-    .then(() => res.sendStatus(200))
-    .catch(err => console.log(err))
-);
-
-// create new test
-router.post("/", (req, res) => {
-  Test.create(
-    {
-      title: req.body.title
-    },
-    {
+router.get("/", async (req, res, next) => {
+  try {
+    const tests = await Test.findAll({
       raw: true
-    }
-  )
-    .then(test => {
-      req.body.questions.forEach(
-        async (question, questionIndex) =>
-          await Question.create(
-            {
-              type: question.type,
-              text: question.text,
-              test_id: test.get({ plain: true }).id
-            },
-            { raw: true }
-          ).then(question =>
-            req.body.questions[questionIndex].answers.forEach(
-              async answer =>
-                await Answer.create({
-                  answer: answer.answer,
-                  is_right_answer: answer.is_right_answer,
-                  question_id: question.get({ plain: true }).id
-                })
-            )
-          )
-      );
-      res.sendStatus(200);
-    })
-    .catch(err => console.log(err));
+    });
+    res.json(tests);
+  } catch (e) {
+    next(e);
+  }
 });
 
-router.put("/", async (req, res) => {
+// delete test by Id
+router.delete("/:id", async (req, res, next) => {
   try {
-    // await Test.destroy({
-    //   where: {
-    //     id: req.body.id
-    //   }
-    // });
-    // const test = await Test.create(
-    //   {
-    //     title: req.body.title
-    //   },
-    //   {
-    //     raw: true
-    //   }
-    // );
-    const test = await Test.update(
+    await Test.destroy({
+      where: {
+        id: req.params.id
+      }
+    });
+    res.sendStatus(200);
+  } catch (e) {
+    next(e);
+  }
+});
+
+// create new test
+router.post("/", async (req, res, next) => {
+  try {
+    const test = await Test.create({
+      title: req.body.title
+    });
+    await saveQuestions(req.body.questions, test.id);
+    res.sendStatus(200);
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.put("/", async (req, res, next) => {
+  try {
+    await Test.update(
       {
         title: req.body.title
       },
       {
-        raw: true,
         where: {
           id: req.body.id
         }
@@ -94,32 +64,16 @@ router.put("/", async (req, res) => {
         test_id: req.body.id
       }
     });
-
-    for (const question of req.body.questions) {
-      const createdQuestion = await Question.create(
-        {
-          type: question.type,
-          text: question.text,
-          test_id: req.body.id
-        },
-        { raw: true }
-      );
-      for (const answer of question.answers) {
-        await Answer.create({
-          answer: answer.answer,
-          is_right_answer: answer.is_right_answer,
-          question_id: createdQuestion.get({ plain: true }).id
-        });
-      }
-    }
+    await saveQuestions(req.body.questions, req.body.id);
     res.sendStatus(200);
   } catch (e) {
     console.log(e);
+    next(e);
   }
 });
 
 // get test by id
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const test = await Test.findByPk(req.params.id, {
       raw: true
@@ -133,8 +87,8 @@ router.get("/:id", async (req, res) => {
       title: test.title,
       questions
     });
-  } catch (err) {
-    console.log(err);
+  } catch (e) {
+    next(e);
   }
 });
 

@@ -6,7 +6,15 @@ import {
   all
 } from "@redux-saga/core/effects";
 import * as axios from "axios";
-import { deleteTestFromReducer, setTest, setTests } from "./actions";
+import {
+  deleteTestFromReducer,
+  setTest,
+  setTestError,
+  setTestLoading,
+  setTests,
+  setTestsError,
+  setTestsLoading
+} from "./actions";
 import {
   CREATE_TEST,
   DELETE_TEST,
@@ -27,13 +35,12 @@ const API = {
 
 function* getTests() {
   try {
+    yield put(setTestsLoading());
     const response = yield call(API.fetchTests);
     const tests = response.data;
-
-    // success
     yield put(setTests(tests));
   } catch (e) {
-    // yield put()
+    yield put(setTestsError());
   }
 }
 
@@ -41,31 +48,40 @@ function* deleteTest(action) {
   try {
     const response = yield call(API.deleteTest, action.id);
     if (response.status === 200) yield put(deleteTestFromReducer(action.id));
-  } catch (e) {}
+  } catch (e) {
+    yield put(setTestsError());
+  }
 }
 
 function* getTest(action) {
   try {
+    yield put(setTestLoading());
     const response = yield call(API.fetchTest, action.id);
     const test = response.data;
     yield put(setTest(test));
-  } catch (e) {}
+  } catch (e) {
+    yield put(setTestError());
+  }
 }
 
 function* updateTest(action) {
   const data = transformSingleQuestions(action.fields);
   try {
-    const response = yield call(API.updateTest, data);
+    yield call(API.updateTest, data);
     yield put({ type: "TEST_CREATED" });
-  } catch (e) {}
+  } catch (e) {
+    yield put(setTestError());
+  }
 }
 
 function* createTest(action) {
   const data = transformSingleQuestions(action.fields);
   try {
-    const response = yield call(API.createTest, data);
+    yield call(API.createTest, data);
     yield put({ type: "TEST_CREATED" });
-  } catch (e) {}
+  } catch (e) {
+    yield put(setTestError());
+  }
 }
 
 export function* rootSaga() {

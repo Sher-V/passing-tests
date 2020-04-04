@@ -1,4 +1,4 @@
-import { useStyles } from "./styles";
+import { useStyles } from "../../styles";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import { Field } from "react-final-form";
